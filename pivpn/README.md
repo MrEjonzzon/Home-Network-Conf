@@ -35,3 +35,12 @@ curl -L https://install.pivpn.io | bash
 echo "export PATH="/usr/local/bin:$PATH" >> .bashrc
 source .bashrc
 ```
+
+## Set up port
+I am using an EdgeRouter, should be similar on other devices.
+1. Go to https://192.168.1.1
+2. Firewall/NAT > Port Forwarding
+![image](https://user-images.githubusercontent.com/70457382/226215795-5efd23c4-cb7c-45b0-beee-649f14a419ad.png)
+
+I have been using the following guides:  
+https://wiki.homelabtim.com/books/easiest-vpn-on-proxmox-with-wireguard/page/commands-used-in-video
