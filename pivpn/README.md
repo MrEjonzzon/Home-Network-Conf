@@ -3,7 +3,7 @@ Runs on LXC container running Ubuntu 18.04 on pve
 
 ## Installing PiVPN
 
-1. Install a LXC container with Ubuntu 18.04. I am using 2GB memory and 1GB swap
+1. Install a LXC container with Ubuntu 18.04. I am using 1GB memory and 512MB swap
 
 2. Expose Container
 
