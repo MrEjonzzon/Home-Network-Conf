@@ -1,7 +1,7 @@
 # Home-Network-Conf
 Confs for hosts, ssh on my home network
 
-Should probably fix NetBox, but for now:
+Should probably fix NetBox, but ip range for now:
 
 ```
 192.168.1.101  pve01
