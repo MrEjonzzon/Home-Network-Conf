@@ -9,7 +9,7 @@ Runs on LXC container running Ubuntu 18.04 on pve
 
 ```
 cd /etc/pve/lxc
-nano (container number)
+vim (container number)
 add these lines
 lxc.cgroup.devices.allow: c 10:200 rwm
 lxc.mount.entry: /dev/net dev/net none bind,create=dir
