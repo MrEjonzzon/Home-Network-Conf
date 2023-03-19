@@ -8,7 +8,10 @@ Should probably fix NetBox, but ip range for now:
 
 192.168.1.110-119  omv stuff
 
-192.168.1.120-129 winddws stuff
+192.168.1.120-129 windows stuff
 
 192.168.1.130-139 kub stuff
 ```
+
+## PiVPN
+All hosts run PiVPN so they can be accessed remotely
