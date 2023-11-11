@@ -6,6 +6,8 @@ Should probably fix NetBox, but ip range for now:
 ```
 192.168.1.101  pve01
 
+192.168.1.102 - 192.168.1.109 VPN Stuff
+
 192.168.1.110-119  omv stuff
 
 192.168.1.120-129 windows stuff
