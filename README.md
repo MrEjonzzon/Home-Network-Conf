@@ -4,7 +4,7 @@ Confs for hosts, ssh on my home network
 Should probably fix NetBox, but ip range for now:
 
 ```
-192.168.1.101  pve01
+192.168.1.101  pve01 <--- Old
 
 192.168.1.102 - 192.168.1.109 VPN Stuff
 
