@@ -1,4 +1,6 @@
 # Home-Network-Conf
+Currently, I only have the NAS running OpenMediaVault. But I'll keep this for reference. 
+
 Confs for hosts, ssh on my home network
 
 Should probably fix NetBox, but ip range for now:
