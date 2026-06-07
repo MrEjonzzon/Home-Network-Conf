@@ -10,31 +10,37 @@ services:
       - /dev/net/tun:/dev/net/tun
     ports:
       - 8080:8080/tcp # qBittorrent Web UI
+      - 3000:3000/tcp # Gluetun Web UI
     environment:
       - VPN_SERVICE_PROVIDER=protonvpn
       - VPN_TYPE=wireguard
-      
-      # --- WireGuard Config ---
-      - WIREGUARD_PRIVATE_KEY=your_private_key_here
-      - SERVER_COUNTRIES=Sweden 
-      
-      # --- Port Forwarding & WebUI Security Patches ---
-      - PORT_FORWARD_ONLY=on 
-      - VPN_PORT_FORWARDING=on 
-      - HTTP_CONTROL_SERVER_AUTH_DEFAULT_ROLE={"auth":"none"} # Fixes Gluetun WebUI 401 Error
-      
-      # --- Automatic Port & Interface Binding Sync ---
-      # Automatically sets the incoming port AND forces qBit to bind strictly to Gluetun's VPN interface (tun0)
-      - VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh -c 'wget -O- -nv --retry-connrefused --post-data "json={\"listen_port\":{{PORTS}},\"current_network_interface\":\"{{VPN_INTERFACE}}\"}" http://127.0.0.1:8080/api/v2/app/setPreferences'
+      - WIREGUARD_PRIVATE_KEY= # https://account.proton.me/u/0/vpn/WireGuard
+      - SERVER_COUNTRIES=Sweden
+      - PORT_FORWARD_ONLY=on
+      - VPN_PORT_FORWARDING=on
+      - HTTP_CONTROL_SERVER_AUTH_DEFAULT_ROLE={"auth":"none"}
+    restart: unless-stopped
+
+  port-forward:
+    image: mjmeli/qbittorrent-port-forward-gluetun-server:latest
+    container_name: port-forward
+    network_mode: "service:gluetun"
+    environment:
+      - QBT_USERNAME=admin
+      - QBT_PASSWORD= # You know it
+      - QBT_ADDR=http://127.0.0.1:8080
+      - GTN_ADDR=http://127.0.0.1:8000
+    depends_on:
+      - gluetun
+      - qbittorrent
     restart: unless-stopped
 
   gluetun-webui:
-    image: scuzza/gluetun-webui:latest # Corrected Docker Hub repository
+    image: scuzza/gluetun-webui:latest
     container_name: gluetun-webui
-    ports:
-      - 3000:3000/tcp
+    network_mode: "service:gluetun" 
     environment:
-      - GLUETUN_CONTROL_URL=http://gluetun:8000 
+      - GLUETUN_CONTROL_URL=http://127.0.0.1:8000
     depends_on:
       - gluetun
     restart: unless-stopped
@@ -42,62 +48,7 @@ services:
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
-    network_mode: "service:gluetun" 
-    environment:
-      - PUID=998
-      - PGID=100
-      - TZ=Europe/Stockholm
-      - WEBUI_PORT=8080
-    volumes:
-      - /tank/shared/nas-shared/qbittorrent-config:/config
-      - /tank/shared/nas-shared/torrents:/downloads
-    depends_on:
-      - gluetun
-    restart: unless-stoppedversion: "3.3"
-
-services:
-  gluetun:
-    image: qmcgaw/gluetun:latest
-    container_name: gluetun
-    cap_add:
-      - NET_ADMIN
-    devices:
-      - /dev/net/tun:/dev/net/tun
-    ports:
-      - 8080:8080/tcp # qBittorrent Web UI
-    environment:
-      - VPN_SERVICE_PROVIDER=protonvpn
-      - VPN_TYPE=wireguard
-      
-      # --- WireGuard Config ---
-      - WIREGUARD_PRIVATE_KEY=your_private_key_here
-      - SERVER_COUNTRIES=Sweden 
-      
-      # --- Port Forwarding & WebUI Security Patches ---
-      - PORT_FORWARD_ONLY=on 
-      - VPN_PORT_FORWARDING=on 
-      - HTTP_CONTROL_SERVER_AUTH_DEFAULT_ROLE={"auth":"none"} # Fixes Gluetun WebUI 401 Error
-      
-      # --- Automatic Port & Interface Binding Sync ---
-      # Automatically sets the incoming port AND forces qBit to bind strictly to Gluetun's VPN interface (tun0)
-      - VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh -c 'wget -O- -nv --retry-connrefused --post-data "json={\"listen_port\":{{PORTS}},\"current_network_interface\":\"{{VPN_INTERFACE}}\"}" http://127.0.0.1:8080/api/v2/app/setPreferences'
-    restart: unless-stopped
-
-  gluetun-webui:
-    image: scuzza/gluetun-webui:latest # Corrected Docker Hub repository
-    container_name: gluetun-webui
-    ports:
-      - 3000:3000/tcp
-    environment:
-      - GLUETUN_CONTROL_URL=http://gluetun:8000 
-    depends_on:
-      - gluetun
-    restart: unless-stopped
-
-  qbittorrent:
-    image: lscr.io/linuxserver/qbittorrent:latest
-    container_name: qbittorrent
-    network_mode: "service:gluetun" 
+    network_mode: "service:gluetun"
     environment:
       - PUID=998
       - PGID=100
