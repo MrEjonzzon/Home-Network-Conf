@@ -1,0 +1,57 @@
+version: "3.3"
+
+services:
+  gluetun:
+    image: qmcgaw/gluetun:latest
+    container_name: gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - 8080:8080/tcp # qBittorrent Web UI
+      # We do NOT need to expose port 8000 to the network. 
+      # The WebUI container talks to Gluetun's API on port 8000 internally.
+    environment:
+      - VPN_SERVICE_PROVIDER=protonvpn
+      - VPN_TYPE=wireguard
+      
+      # --- WireGuard Config ---
+      - WIREGUARD_PRIVATE_KEY=your_private_key_here
+      - SERVER_COUNTRIES=Sweden 
+      
+      # --- Port Forwarding ---
+      - PORT_FORWARD_ONLY=on 
+      - VPN_PORT_FORWARDING=on 
+      
+      # --- Automatic Port Sync ---
+      - VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh -c 'wget -O- -nv --retry-connrefused --post-data "json={\"listen_port\":{{PORT}},\"current_network_interface\":\"{{VPN_INTERFACE}}\",\"random_port\":false,\"upnp\":false}" http://127.0.0.1:8080/api/v2/app/setPreferences'
+    restart: unless-stopped
+
+  gluetun-webui:
+    image: scuzza/gluetun-webui:latest
+    container_name: gluetun-webui
+    ports:
+      - 3000:3000/tcp # Gluetun Web UI Port
+    environment:
+      # This points the WebUI to Gluetun's internal hidden API
+      - GLUETUN_CONTROL_URL=http://gluetun:8000 
+    depends_on:
+      - gluetun
+    restart: unless-stopped
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    network_mode: "service:gluetun" 
+    environment:
+      - PUID=998
+      - PGID=100
+      - TZ=Europe/Stockholm
+      - WEBUI_PORT=8080
+    volumes:
+      - /tank/shared/nas-shared/qbittorrent-config:/config
+      - /tank/shared/nas-shared/torrents:/downloads
+    depends_on:
+      - gluetun
+    restart: unless-stopped
