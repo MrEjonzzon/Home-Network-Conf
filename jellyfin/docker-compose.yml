@@ -4,7 +4,7 @@ services:
     container_name: jellyfin
     user: 998:100
     group_add:
-      - "106"                 # render group
+      - "106"
     restart: unless-stopped
     ports:
       - "8096:8096"
@@ -13,6 +13,6 @@ services:
     volumes:
       - /tank/appdata/jellyfin/config:/config
       - /tank/appdata/jellyfin/cache:/cache
-      - /tank/shared/nas-shared/torrents/completed/plex:/media:ro
+      - /tank/shared/nas-shared/torrents/completed/media:/media:ro
     devices:
       - /dev/dri:/dev/dri
