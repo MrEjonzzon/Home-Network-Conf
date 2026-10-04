@@ -2,9 +2,9 @@ services:
   jellyfin:
     image: jellyfin/jellyfin:latest
     container_name: jellyfin
-    user: 998:100             # same owner as qBittorrent
+    user: 998:100
     group_add:
-      - "XXX"                 # render group id: getent group render
+      - "106"                 # render group
     restart: unless-stopped
     ports:
       - "8096:8096"
@@ -15,4 +15,4 @@ services:
       - /tank/appdata/jellyfin/cache:/cache
       - /tank/shared/nas-shared/torrents/completed/plex:/media:ro
     devices:
-      - /dev/dri:/dev/dri     # remove if no iGPU/GPU
+      - /dev/dri:/dev/dri
