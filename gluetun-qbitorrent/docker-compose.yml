@@ -1,5 +1,3 @@
-version: "3.3"
-
 services:
   gluetun:
     image: qmcgaw/gluetun:latest
@@ -14,7 +12,7 @@ services:
     environment:
       - VPN_SERVICE_PROVIDER=protonvpn
       - VPN_TYPE=wireguard
-      - WIREGUARD_PRIVATE_KEY= # https://account.proton.me/u/0/vpn/WireGuard
+      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
       - SERVER_COUNTRIES=Sweden
       - PORT_FORWARD_ONLY=on
       - VPN_PORT_FORWARDING=on
@@ -27,7 +25,7 @@ services:
     network_mode: "service:gluetun"
     environment:
       - QBT_USERNAME=admin
-      - QBT_PASSWORD= # You know it
+      - QBT_PASSWORD=${QBT_PASSWORD}
       - QBT_ADDR=http://127.0.0.1:8080
       - GTN_ADDR=http://127.0.0.1:8000
     depends_on:
@@ -38,7 +36,7 @@ services:
   gluetun-webui:
     image: scuzza/gluetun-webui:latest
     container_name: gluetun-webui
-    network_mode: "service:gluetun" 
+    network_mode: "service:gluetun"
     environment:
       - GLUETUN_CONTROL_URL=http://127.0.0.1:8000
     depends_on:
