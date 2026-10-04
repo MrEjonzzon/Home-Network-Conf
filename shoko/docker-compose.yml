@@ -1,0 +1,19 @@
+services:
+  shoko-server:
+    image: shokoanime/server:latest
+    container_name: shoko-server
+    restart: unless-stopped
+    ports:
+      - "8111:8111"
+    environment:
+      - PUID=998
+      - PGID=100
+      - TZ=Europe/Stockholm
+    volumes:
+      - /tank/appdata/shoko:/home/shoko/.shoko
+      - /tank/shared/nas-shared/torrents/completed/media:/media:ro   # same path as jellyfin so Shokofin paths line up
+    networks: [default, proxy]   # proxy = jellyfin reaches it as http://shoko-server:8111
+
+networks:
+  proxy:
+    external: true

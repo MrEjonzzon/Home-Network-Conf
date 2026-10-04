@@ -71,6 +71,13 @@ Used only for web apps (HTTP), e.g. office-pong. It isn't used for the VPN becau
 - EdgeRouter: forward TCP 443 → `192.168.1.110:8443`, hairpin NAT on.
 - Jellyfin: Known Proxies = `caddy`, cap the remote bitrate, one account per person, admin has remote access off.
 
+## Shoko (anime metadata for Jellyfin)
+[shoko/](shoko/), Portainer git stack. Web UI: `http://192.168.1.110:8111`.
+
+- Anime lives in `media/anime-serier` and `media/anime-filmer`. Shoko mounts `media` read-only at `/media`, the same path Jellyfin uses.
+- First run wizard: log in to AniDB, then add both import folders, `/media/anime-serier` and `/media/anime-filmer`.
+- Jellyfin: install the Shokofin plugin (add the repo `https://raw.githubusercontent.com/ShokoAnime/Shokofin/metadata/stable/manifest.json` under Plugins > Repositories) and set the host to `http://shoko-server:8111`. Then make a Shows library on `/media/anime-serier` and a Movies library on `/media/anime-filmer`.
+
 ## Never commit
 Public IP, Cloudflare API token, WireGuard private or preshared keys, client `.conf` files.
 
