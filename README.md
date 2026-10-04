@@ -17,8 +17,52 @@ Should probably fix NetBox, but ip range for now:
 192.168.1.130-139 kub stuff
 ```
 
-## PiVPN
-All hosts run PiVPN so they can be accessed remotely
+## Network
+- Router: Ubiquiti EdgeRouter PoE 5-port (EdgeOS), gateway `192.168.1.1` on switch0. WAN `eth0` uses ISP DHCP (the IP rarely changes but isn't static, so DDNS handles it).
+- Server: OMV, hostname `omv`, `192.168.1.110`, LAN `192.168.1.0/24`, nftables firewall.
+- Docker is managed with Portainer.
+- Domain `emiljo.com`, DNS on Cloudflare (registrar GoDaddy).
+
+## Remote access VPN (WireGuard on OMV)
+I use the OMV WireGuard plugin, not wg-easy. wg-easy failed with "address already in use" on UDP 51820 because the OMV tunnel was already running.
+
+- Tunnel `wgnet1`, UDP `51820`, subnet `10.192.1.0/24`
+- Clients (iPad, phone, laptop) are under Services > Wireguard > Clients, with "Restrict" on
+- Endpoint: `vpn.emiljo.com:51820`
+- Split tunnel: `AllowedIPs = 192.168.1.0/24, 10.192.1.0/24`
+
+### DNS / DDNS
+- A record `vpn.emiljo.com`, **DNS only** (grey cloud). The Cloudflare proxy doesn't carry UDP.
+- Portainer stack `cloudflare-ddns`, see [cloudflare-ddns/docker-compose.yml](cloudflare-ddns/docker-compose.yml). The token is set in Portainer, never in the repo.
+- Token: scoped to `emiljo.com` with Zone > DNS > Edit and Zone > Zone > Read
+
+### Router / firewall
+- EdgeRouter: forward UDP `51820` to `192.168.1.110`
+- OMV firewall: allow UDP `51820` inbound
+
+### While connected
+| What      | Where                         |
+|-----------|-------------------------------|
+| OMV GUI   | http://192.168.1.110          |
+| Portainer | https://192.168.1.110:<port>  |
+| SSH       | `<user>@192.168.1.110`        |
+
+- `omv.local` doesn't resolve over the tunnel (mDNS), so use IPs.
+- If the remote network is also `192.168.1.0/24`, the routes clash. Use the server's tunnel IP (`ip -4 addr show wgnet1`) instead.
+
+### Troubleshooting
+```
+sudo wg show              # check "latest handshake" for the peer
+nslookup vpn.emiljo.com   # should return the current public IP
+```
+- Check the router forward and the OMV firewall.
+- Test from a phone on mobile data, not on the LAN and not through ProtonVPN.
+
+## Cloudflare Tunnel (Zero Trust)
+Used only for web apps (HTTP), e.g. office-pong. It isn't used for the VPN because tunnels don't carry WireGuard UDP.
+
+## Never commit
+Public IP, Cloudflare API token, WireGuard private or preshared keys, client `.conf` files.
 
 ## SMB Share
 

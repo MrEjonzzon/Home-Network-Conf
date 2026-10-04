@@ -1,4 +1,6 @@
 # PiVPN
+> Legacy: replaced by the OMV WireGuard plugin, see the [main README](../README.md).
+
 Runs on LXC container running Ubuntu 18.04 on pve
 
 ## Installing PiVPN
