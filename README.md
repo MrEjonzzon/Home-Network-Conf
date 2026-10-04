@@ -65,7 +65,7 @@ Used only for web apps (HTTP), e.g. office-pong. It isn't used for the VPN becau
 `https://jellyfin.emiljo.com`: client → router TCP 443 → omv:8443 → caddy → jellyfin:8096
 
 - DNS: CNAME `jellyfin` → `vpn.emiljo.com`, **DNS only**. Proxying video through Cloudflare can break their terms.
-- Caddy: [caddy/](caddy/), run from the CLI (`docker compose up -d` in `/tank/appdata/caddy`), not from Portainer. Certs come via TLS-ALPN on 443 and renew automatically (`docker logs caddy`).
+- Caddy: [caddy/](caddy/), Portainer git stack. The live Caddyfile is `/tank/appdata/caddy/Caddyfile` on omv; the repo copy is a reference, so copy edits there and restart caddy. Certs come via TLS-ALPN on 443 and renew automatically (`docker logs caddy`).
 - Port 80 stays with the OMV GUI, so Caddy doesn't use it.
 - Jellyfin and caddy share the `proxy` Docker network.
 - EdgeRouter: forward TCP 443 → `192.168.1.110:8443`, hairpin NAT on.
