@@ -16,3 +16,8 @@ services:
       - /tank/shared/nas-shared/torrents/completed/media:/media:ro
     devices:
       - /dev/dri:/dev/dri
+    networks: [default, proxy]   # proxy = shared with caddy
+
+networks:
+  proxy:
+    external: true

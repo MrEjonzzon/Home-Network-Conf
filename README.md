@@ -61,6 +61,16 @@ nslookup vpn.emiljo.com   # should return the current public IP
 ## Cloudflare Tunnel (Zero Trust)
 Used only for web apps (HTTP), e.g. office-pong. It isn't used for the VPN because tunnels don't carry WireGuard UDP.
 
+## Jellyfin for family/friends
+`https://jellyfin.emiljo.com`: client → router TCP 443 → omv:8443 → caddy → jellyfin:8096
+
+- DNS: CNAME `jellyfin` → `vpn.emiljo.com`, **DNS only**. Proxying video through Cloudflare can break their terms.
+- Caddy: [caddy/](caddy/), run from the CLI (`docker compose up -d` in `/tank/appdata/caddy`), not from Portainer. Certs come via TLS-ALPN on 443 and renew automatically (`docker logs caddy`).
+- Port 80 stays with the OMV GUI, so Caddy doesn't use it.
+- Jellyfin and caddy share the `proxy` Docker network.
+- EdgeRouter: forward TCP 443 → `192.168.1.110:8443`, hairpin NAT on.
+- Jellyfin: Known Proxies = `caddy`, cap the remote bitrate, one account per person, admin has remote access off.
+
 ## Never commit
 Public IP, Cloudflare API token, WireGuard private or preshared keys, client `.conf` files.
 

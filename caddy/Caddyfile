@@ -1,0 +1,3 @@
+jellyfin.emiljo.com {
+    reverse_proxy jellyfin:8096
+}

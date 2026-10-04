@@ -1,0 +1,15 @@
+services:
+  caddy:
+    image: caddy:2
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "8443:443"            # router forwards WAN 443 here; 80 stays with the OMV GUI
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - /tank/appdata/caddy/data:/data
+      - /tank/appdata/caddy/config:/config
+    networks: [proxy]
+networks:
+  proxy:
+    external: true
