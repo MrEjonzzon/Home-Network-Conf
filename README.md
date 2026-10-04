@@ -67,7 +67,7 @@ Used only for web apps (HTTP), e.g. office-pong. It isn't used for the VPN becau
 - DNS: CNAME `jellyfin` → `vpn.emiljo.com`, **DNS only**. Proxying video through Cloudflare can break their terms.
 - Caddy: [caddy/](caddy/), Portainer git stack. The live Caddyfile is `/tank/appdata/caddy/Caddyfile` on omv; the repo copy is a reference, so copy edits there and restart caddy. Certs come via TLS-ALPN on 443 and renew automatically (`docker logs caddy`).
 - Port 80 stays with the OMV GUI, so Caddy doesn't use it.
-- Jellyfin and caddy share the `proxy` Docker network.
+- Jellyfin and caddy share the `proxy` Docker network. It's external, so create it once before deploying either stack: `docker network create proxy`.
 - EdgeRouter: forward TCP 443 → `192.168.1.110:8443`, hairpin NAT on.
 - Jellyfin: Known Proxies = `caddy`, cap the remote bitrate, one account per person, admin has remote access off.
 
