@@ -1,0 +1,16 @@
+services:
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    network_mode: host          # local discovery and correct client detection; no ports: needed
+    restart: unless-stopped
+    environment:
+      - PUID=998
+      - PGID=100
+      - TZ=Europe/Stockholm
+      - VERSION=docker
+    volumes:
+      - /tank/appdata/plex/config:/config
+      - /tank/shared/nas-shared/torrents/completed/plex:/media:ro
+    devices:
+      - /dev/dri:/dev/dri       # hardware transcoding (needs Plex Pass); remove if no iGPU
