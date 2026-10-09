@@ -1,6 +1,6 @@
 services:
   shoko-server:
-    image: shokoanime/server:latest
+    image: shokoanime/server:daily
     container_name: shoko-server
     restart: unless-stopped
     ports:
