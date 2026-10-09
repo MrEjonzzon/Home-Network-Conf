@@ -1,6 +1,6 @@
 services:
   jellyfin:
-    image: jellyfin/jellyfin:daily
+    image: jellyfin/jellyfin:latest
     container_name: jellyfin
     user: 998:100
     group_add:
