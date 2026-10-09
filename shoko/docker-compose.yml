@@ -11,7 +11,7 @@ services:
       - TZ=Europe/Stockholm
     volumes:
       - /tank/appdata/shoko:/home/shoko/.shoko
-      - /tank/shared/nas-shared/torrents/completed/media:/media:ro   # same path as jellyfin so Shokofin paths line up
+      - /tank/shared/nas-shared/torrents/completed/media:/media   # same path as jellyfin so Shokofin paths line up
     networks: [default, proxy]   # proxy = jellyfin reaches it as http://shoko-server:8111
 
 networks:
